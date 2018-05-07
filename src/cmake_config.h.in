@@ -1,0 +1,5 @@
+#pragma once
+
+#define PROJECT_NAME "@PROJECT_NAME@"
+#define VERSION_STRING "@VERSION_STRING@"
+#define SHAREDIR "@SHAREDIR@"

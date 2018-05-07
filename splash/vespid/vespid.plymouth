@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=VESPID
+Description=VESPID theme
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/vespid
+ScriptFile=/usr/share/plymouth/themes/vespid/vespid.script

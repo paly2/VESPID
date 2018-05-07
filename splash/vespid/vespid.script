@@ -1,0 +1,29 @@
+Window.SetBackgroundTopColor(1, 0.76, 0);
+Window.SetBackgroundBottomColor(0.68, 0.53, 0);
+
+hornet_image = Image("hornet.png");
+hornet_sprite = Sprite(hornet_image);
+// Center the hornet on Y
+hornet_sprite.SetY(Window.GetHeight() / 2 - hornet_image.GetHeight() / 2);
+hornet_sprite.SetZ(1);
+
+vespid_image = Image("vespid.png");
+vespid_sprite = Sprite(vespid_image);
+vespid_sprite.SetX(Window.GetWidth() / 2 - vespid_image.GetWidth() / 2);
+vespid_sprite_y = Window.GetHeight() / 8;
+vespid_sprite.SetY(vespid_sprite_y);
+
+vespid_desc_image = Image("vespid_desc.png");
+vespid_desc_sprite = Sprite(vespid_desc_image);
+vespid_desc_sprite.SetX(Window.GetWidth() / 2 - vespid_desc_image.GetWidth() / 2);
+vespid_desc_sprite.SetY(vespid_sprite_y + vespid_image.GetHeight());
+
+if (Plymouth.GetMode() == "boot") {
+	fun progress_callback(time, progress) {
+		hornet_sprite.SetX(Window.GetWidth() * Math.Max(progress - 0.5, 0) * 2);
+	}
+
+	Plymouth.SetBootProgressFunction (progress_callback);
+} else {
+	hornet_sprite.SetX(Window.GetWidth() / 2 - hornet_image.GetWidth() / 2);
+}
