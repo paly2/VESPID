@@ -4,6 +4,9 @@ require("nn")
 require("image")
 require("paths")
 
+local IMAGE_HEIGHT = 16
+local IMAGE_WIDTH = 32
+
 print("Building datasets...")
 
 local categories = {}
@@ -21,20 +24,12 @@ for category in paths.files("dataset/train") do
 	end
 end
 
-local trainset = {data = torch.Tensor(math.ceil(#images * 3/2), 3, 18, 24), label = torch.Tensor(math.ceil(#images * 3/2))}
+local trainset = {data = torch.Tensor(#images, 3, IMAGE_HEIGHT, IMAGE_WIDTH), label = torch.Tensor(#images)}
 local n_trainset = {}
 for i, img in ipairs(images) do
 	trainset.data[i] = image.load(img.path, 3, "double")
 	trainset.label[i] = img.label
 	n_trainset[categories[img.label]] = (n_trainset[categories[img.label]] or 0) + 1
-end
-
--- Add half empty images
-table.insert(categories, "empty")
-n_trainset.empty = math.ceil(#images / 2)
-for i = #images + 1, math.ceil(#images * 3/2) do
-	trainset.data[i] = image.load("dataset/empty.png", 3, "double")
-	trainset.label[i] = #categories
 end
 
 setmetatable(trainset,
@@ -68,18 +63,13 @@ for cat_i, category in ipairs(categories) do
 		end
 	end
 end
-local testset = {data = torch.Tensor(#test_images + 1, 3, 18, 24), label = {}}
+local testset = {data = torch.Tensor(#test_images, 3, IMAGE_HEIGHT, IMAGE_WIDTH), label = {}}
 local n_testset = {}
 for i, img in ipairs(test_images) do
 	testset.data[i] = image.load(img.path, 3, "double")
 	testset.label[i] = img.label
 	n_testset[categories[img.label]] = (n_testset[categories[img.label]] or 0) + 1
 end
-
--- Add the empty image
-n_testset.empty = 1
-testset.data[#test_images + 1] = image.load("dataset/empty.png", 3, "double")
-testset.label[#test_images + 1] = #categories
 
 -- Normalization
 for i=1,3 do -- over each image channel
@@ -98,15 +88,33 @@ end
 io.write("Done.\n")
 
 -- Construct the network
+local width = IMAGE_WIDTH
+local height = IMAGE_HEIGHT
+
 local net = nn.Sequential()
+
 net:add(nn.SpatialConvolution(3, 6, 3, 3))
+width = math.floor(width - 3 + 1)
+height = math.floor(height - 3 + 1)
+
 net:add(nn.ReLU())
+
 net:add(nn.SpatialMaxPooling(2, 2, 2, 2))
+width = math.floor((width - 2) / 2 + 1)
+height = math.floor((height - 2) / 2 + 1)
+
 net:add(nn.SpatialConvolution(6, 16, 3, 3))
+width = math.floor(width - 3 + 1)
+height = math.floor(height - 3 + 1)
+
 net:add(nn.ReLU())
+
 net:add(nn.SpatialMaxPooling(2, 2, 2, 2))
-net:add(nn.View(16*3*4))
-net:add(nn.Linear(16*3*4, 100))
+width = math.floor((width - 2) / 2 + 1)
+height = math.floor((height - 2) / 2 +1)
+
+net:add(nn.View(16*width*height))
+net:add(nn.Linear(16*width*height, 100))
 net:add(nn.ReLU())
 net:add(nn.Linear(100, 30))
 net:add(nn.ReLU())
@@ -119,7 +127,7 @@ print("\nTraining network...")
 local criterion = nn.ClassNLLCriterion() -- Log-likelihood loss function
 local trainer = nn.StochasticGradient(net, criterion)
 trainer.learningRate = 0.001
-trainer.maxIteration = 30
+trainer.maxIteration = 100
 trainer.shuffleIndices = true
 trainer:train(trainset)
 
