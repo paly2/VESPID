@@ -89,7 +89,7 @@ namespace GUI {
 		void draw();
 		SDL_Renderer *renderer = NULL;
 
-	public:
+	protected:
 		bool isInitialized();
 		void recreateFromText(const char *str, SDL_Color color);
 		void recreateFromSurface(SDL_Surface *surface);
