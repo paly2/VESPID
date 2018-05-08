@@ -15,10 +15,6 @@
 
 #include "cmake_config.h"
 
-#define DRAW_TEXTURES(textures) drawTextures((Texture*) &(textures), sizeof(textures));
-#define DESTROY_TEXTURES(textures) destroyTextures((Texture*) &(textures), sizeof(textures));
-#define INIT_TEXTURES(textures) initTextures((Texture*) &(textures), sizeof(textures));
-
 namespace GUI {
 	GUI::GUI() {
 		/// Initialization
