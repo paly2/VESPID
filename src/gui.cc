@@ -28,7 +28,7 @@ namespace GUI {
 			throw SDLException("Failed to initialize SDL");
 		// The raspberry pi is not supposed to run anything but this program in
 		// the graphical environment.
-		m_window = SDL_CreateWindow("Hornet", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 320, 240, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+		m_window = SDL_CreateWindow(PROJECT_NAME " " VERSION_STRING, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 320, 240, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
 		if (m_window == NULL)
 			throw SDLException("Failed to create the window");
 
