@@ -55,6 +55,115 @@ The process draws directly on the framebuffer (via SDL) and does not allow acces
 to virtual console unless stopped. It is recommended to run it as the last Systemd
 service to be started.
 
+### Compilation and installation
+
+Run the following commands to install VESPID and the splash screen:
+```
+git clone https://github.com/paly2/vespid.git
+cd vespid
+cmake . -DINSTALL_SPLASH=1
+make
+sudo make install
+```
+
+Now, if you want to change the Plymouth splash screen:
+```
+plymouth-set-default-theme vespid
+```
+
+After running `make install`, the `vespid` executable is installed in
+`/usr/local/bin` and all other files in `/usr/local/share/vespid`. To start
+VESPID, continue to the next section.
+
+### Configuration
+
+VESPID is configured using environment variables. It won't start if at least the
+following environment variables exist (all others have default values):
+
+* `LASER_RECEPTOR_PIN`: pin on which the laser receptor is plugged (identified using broadcom number),
+* `SERVO_PIN`: pin on which the servo is plugged (identified using broadcom number),
+* `SERVO_LIFE`: servo dutycycle for the "life" position (between 1000 and 2000),
+* `SERVO_DEATH`: servo dutycycle for the "death" position (between 1000 and 2000).
+
+In capture mode, neither the receptor nor the servo have to be plugged, you must
+nonetheless fill them with values.
+
+In systemd, you can write a configuration file and set the environment values using
+the `EnvironmentFile` directive.
+
+In normal operation, VESPID should be run in `/usr/local/share/vespid`.
+
+Here is an example of systemd service file for system with Plymouth, a system-wide
+Torch installation, a VESPID configuration file at `/etc/vespid.conf` and a
+user `vespid` under which the service is run:
+```
+[Unit]
+Description=VESPID service
+Requires=pigpiod.service
+After=local-fs.target
+After=plymouth-quit-wait.service
+Before=getty.target
+
+[Service]
+Type=simple
+User=vespid
+WorkingDirectory=/usr/local/share/vespid
+ExecStart=/usr/local/bin/vespid
+Restart=on-failure
+EnvironmentFile=/etc/vespid.conf
+Environment="TERM=dumb"
+
+[Install]
+WantedBy=basic.target
+```
+
+### Neural network training
+
+VESPID cannot work without a neural network. We provide a script for training
+a new neural network.
+
+In order to use it, you must first create a large training dataset. Create a
+new directory named `dataset` and 3 subdirectories inside it: `asian`, `european`
+and `empty`. (`European` can actually be used for any other insect that could
+enter the trap but should not be killed).
+
+Export the required environment values and start VESPID in the parent directory
+of `dataset`. Press the `K` key to go through modes. Once you are in a capture
+mode, press the spacebar to save the image.
+
+Now, you have to split your dataset into the train dataset and the test dataset.
+Add a directory level in `dataset` (`train` and `test`) so your dataset
+now looks like this (we will try to provide a shell script to automate this operation
+soon):
+
+```
+.
+└── dataset
+    ├── test
+    │   ├── asian
+    │   ├── european
+    │   └── empty
+    └── train
+        ├── asian
+        ├── european
+        └── empty
+```
+
+Each of the `asian`, `european` and `empty` directories being filled with
+corresponding pictures of respectively asian hornets, any other insects (and
+particularly european hornets), and no insect. Images in `train` are used to
+actually train the network, whereas images in `test` are used to test it
+afterwards.
+
+Now, run the `torchnn/train.lua` script with LuaJIT (requires Torch). If you
+installed VESPID by running `make install`, this means to run:
+```
+luajit /usr/local/share/vespid/torchnn/train.lua
+```
+
+This script will generate a `nnhornet.t7` file that should be placed in the
+working directory of VESPID when started in normal mode.
+
 ### Licensing
 
 Copyright © 2018, Langrognet Pierre-Adrien <upsilon@langg.net>,
