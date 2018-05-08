@@ -9,7 +9,7 @@
 #include "camera.hh"
 #include "cmake_config.h"
 
-#define TESTSCRIPT SHAREDIR "/test.lua"
+#define TESTSCRIPT SHAREDIR "/torchnn/test.lua"
 #define IMG_SAVE_PATH "/tmp/hornet.ppm"
 
 namespace Image {
