@@ -20,7 +20,7 @@ namespace GUI {
 		/// Initialization
 		if (TTF_Init() < 0)
 			throw SDLException("Failed to initialize SDL_ttf");
-		m_font = TTF_OpenFont(GUI_TTF_FLASER_ONT, GUI_TTF_PTSIZE);
+		m_font = TTF_OpenFont(GUI_TTF_FONT, GUI_TTF_PTSIZE);
 		if (m_font == NULL)
 			throw SDLException("Failed to open TTF font");
 

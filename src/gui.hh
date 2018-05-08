@@ -15,7 +15,7 @@
 #include "gpio.hh"
 #include "cmake_config.h"
 
-#define GUI_TTF_FLASER_ONT   SHAREDIR "/fonts/freefont/FreeSans.ttf"
+#define GUI_TTF_FONT   SHAREDIR "/fonts/freefont/FreeSans.ttf"
 #define GUI_TTF_PTSIZE 16
 #define SERVO_POS_X    50
 #define SERVO_POS_Y    50
