@@ -140,15 +140,4 @@ namespace Image {
 			x_pos = (width - dst.cols) / 2;
 		}
 	}
-
-	SDL_Surface* matToSurface(const cv::Mat &image) {
-		// This function assumes an RGB image with a 24-bits depth.
-		SDL_Surface *surface = SDL_CreateRGBSurfaceFrom((void*) image.data,
-			image.cols,
-			image.rows,
-			24,
-			image.cols * 3,
-			0xff0000, 0x00ff00, 0x0000ff, 0);
-		return surface;
-	}
 }

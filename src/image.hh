@@ -83,5 +83,4 @@ namespace Image {
 
 	void resizeImageForDB(const cv::Mat &src, cv::Mat &dst);
 	void resizeImageForScreen(const cv::Mat &src, cv::Mat &dst, int width, int height, int &x_pos, int &y_pos);
-	SDL_Surface* matToSurface(const cv::Mat &image);
 }

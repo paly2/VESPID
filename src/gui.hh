@@ -205,7 +205,5 @@ namespace GUI {
 			TEXTURE(TextureCaptureMode, capture_mode, CAPTURE_MODE_POS_X, CAPTURE_MODE_POS_Y)
 			TEXTURE(TextureCapturePath, capture_path, CAPTURE_PATH_POS_X, CAPTURE_PATH_POS_Y)
 		} m_capture_mode_textures;
-
-		static SDL_Surface* matToSurface(const cv::Mat &image);
 	}; // class GUI
 } // namespace GUI
