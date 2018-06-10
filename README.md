@@ -1,3 +1,5 @@
+## *This repository was migrated to [https://git.fwhost.eu](https://git.fwhost.eu/paly2/VESPID) in reponse to acquisition of GitHub by Microsoft.*
+
 # VESPID
 #### Very Effective System for Pest Insects to Die
 
